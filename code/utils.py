@@ -13,6 +13,8 @@ es = Elasticsearch("http://host.docker.internal:9200") # Same port when running 
 if ("filtered_tweets" not in es.indices.get_alias("*").keys()) :
     es.indices.create(index='filtered_tweets')
 
+# -------------------- #    
+    
 def get_location_by_address(address):
     """This function returns a location as raw from an address
     will repeat until success"""
@@ -32,7 +34,7 @@ def sentiment(text):
     return 1 if polarity > 0 else -1 if polarity < 0 else 0
 
 
-def tweetToJSON(tweeple):
+def tweepleToElasticsearch(tweeple):
     """
     TweePle (Tweet in the Tuple format)
     """
