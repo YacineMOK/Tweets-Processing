@@ -1,10 +1,7 @@
-"""
-TODO : create a requirements.txt file .. ugh -_-
-"""
-
 from geopy.geocoders import Nominatim
 from textblob import TextBlob
 import json
+from elasticsearch import Elasticsearch
 
 # instantiate a new Nominatim client
 app = Nominatim(user_agent="tutorial")
@@ -39,5 +36,11 @@ def tweetToJSON(tweeple):
         key = tmp[0]
         value = ":".join(tmp[1:])
         res[key] = value
-    json_res = json.dumps(res)
+        
+    json_res = json.dumps(res, indent=3)
+    
+    es = Elasticsearch("http://host.docker.internal:9200") # Same port when running elasticsearch with docker
+    es.index(index="test",
+             id=1, 
+             document=json_res)
     return json_res
