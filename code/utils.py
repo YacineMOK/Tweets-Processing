@@ -41,6 +41,6 @@ def tweetToJSON(tweeple):
     
     es = Elasticsearch("http://host.docker.internal:9200") # Same port when running elasticsearch with docker
     es.index(index="test",
-             id=1, 
+             id=res["id"], 
              document=json_res)
     return json_res

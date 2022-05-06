@@ -1,3 +1,5 @@
 tweepy==4.8.0
 textblob==0.17.1
+geopy==2.2.0
 elasticsearch
+elasticsearch_dsl
