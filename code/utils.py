@@ -4,7 +4,14 @@ import json
 from elasticsearch import Elasticsearch
 
 # instantiate a new Nominatim client
-app = Nominatim(user_agent="tutorial")
+app = Nominatim(user_agent="YacineLilia")
+
+# Database - Link & create the 
+es = Elasticsearch("http://host.docker.internal:9200") # Same port when running elasticsearch with docker
+
+# If this is the first time  you run this code, the index may not exist, we have to create it
+if ("filtered_tweets" not in es.indices.get_alias("*").keys()) :
+    es.indices.create(index='filtered_tweets')
 
 def get_location_by_address(address):
     """This function returns a location as raw from an address
@@ -31,16 +38,17 @@ def tweetToJSON(tweeple):
     """
     res = {}
     for field in tweeple:
-        print(field)
         tmp = field.split(":") 
-        key = tmp[0]
-        value = ":".join(tmp[1:])
+        key = tmp[0] # Before the first :
+        value = ":".join(tmp[1:]) # Join the remaining cells with ":"
         res[key] = value
         
+    # Dump the dict
     json_res = json.dumps(res, indent=3)
     
-    es = Elasticsearch("http://host.docker.internal:9200") # Same port when running elasticsearch with docker
-    es.index(index="test",
-             id=res["id"], 
+    # Add this tweet to elasticsearch
+    es.index(index="filtered_tweets",
+             id=res["id"],
              document=json_res)
+    
     return json_res
